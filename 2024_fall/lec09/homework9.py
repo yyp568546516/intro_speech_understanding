@@ -16,5 +16,15 @@ def fourier_synthesis(num_harmonics, X, T0):
     
     x[n] = (2/N) * sum_{l=1}^{num_harmonics} |X[l*N//T0]| * cos(2*pi*l*n/T0 + angle(X[l*N//T0]))
     '''
-    raise RuntimeError("You need to change this part")
-
+    N = len(X)
+    x = np.zeros(N)  
+    for l in range(1, num_harmonics + 1):
+        index = l * N // T0  
+        if index < N: 
+            magnitude = np.abs(X[index]) 
+            phase = np.angle(X[index])
+            harmonic = magnitude * np.cos(2 * np.pi * l * np.arange(N) / T0 + phase) 
+            x += harmonic  
+    x = (2 / N) * x
+    x = x * np.max(np.abs(X)) / np.max(np.abs(np.fft.fft(x))) 
+    return x
